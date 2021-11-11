@@ -6,7 +6,7 @@ from api.response.user import ResponseUserDto
 from transport.sanic.endpoints import BaseEndpoint
 from transport.sanic.exceptions import SanicPasswordHashException, SanicDBException, SanicUserConflictException
 
-from db.queries import backend_users as user_queries
+from db.queries import backend_users as backend_user_queries
 from db.exceptions import DBDataException, DBIntegrityException, DBUserExistsException
 
 from helpers.password import generate_hash
@@ -25,7 +25,7 @@ class CreateUserEndpoint(BaseEndpoint):
             raise SanicPasswordHashException(str(e))
 
         try:
-            db_user = user_queries.create_user(session, request_model, hashed_password)
+            db_user = backend_user_queries.create_user(session, request_model, hashed_password)
         except DBUserExistsException:
             raise SanicUserConflictException('Login is busy')
 

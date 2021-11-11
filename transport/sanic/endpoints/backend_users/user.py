@@ -5,7 +5,7 @@ from api.request import RequestPatchUserDto
 from api.response import ResponseUserDto
 from db.database import DBSession
 from db.exceptions import DBUserNotExistsException, DBDataException, DBIntegrityException
-from db.queries import backend_users as user_queries
+from db.queries import backend_users as backend_user_queries
 from transport.sanic.endpoints import BaseEndpoint
 from transport.sanic.exceptions import SanicUserNotFound, SanicDBException
 
@@ -21,7 +21,7 @@ class UserEndpoint(BaseEndpoint):
         request_model = RequestPatchUserDto(body)
 
         try:
-            user = user_queries.patch_user(session, request_model, uid)
+            user = backend_user_queries.patch_user(session, request_model, uid)
         except DBUserNotExistsException:
             raise SanicUserNotFound('User not found')
 
@@ -42,7 +42,7 @@ class UserEndpoint(BaseEndpoint):
             return await self.make_response_json(status=403, message='You can only change your own data')
 
         try:
-            user = user_queries.delete_user(session, user_id=uid)
+            user = backend_user_queries.delete_user(session, user_id=uid)
         except DBUserNotExistsException:
             raise SanicUserNotFound('User not found')
 

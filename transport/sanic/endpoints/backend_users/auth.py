@@ -7,7 +7,7 @@ from transport.sanic.exceptions import SanicUserNotFound, SanicPasswordHashExcep
 
 from api.request import RequestAuthUserDto
 
-from db.queries import backend_users as user_queries
+from db.queries import backend_users as backend_user_queries
 from db.exceptions import DBUserNotExistsException
 
 from helpers.password import check_hash, CheckPasswordHashException
@@ -21,7 +21,7 @@ class AuthUserEndpoint(BaseEndpoint):
         request_model = RequestAuthUserDto(body)
 
         try:
-            db_user = user_queries.get_user(session, login=request_model.login)
+            db_user = backend_user_queries.get_user(session, login=request_model.login)
         except DBUserNotExistsException:
             raise SanicUserNotFound('User not found')
 
