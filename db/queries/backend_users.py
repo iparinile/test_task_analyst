@@ -6,7 +6,7 @@ from db.exceptions import DBUserExistsException, DBUserNotExistsException
 from db.models import DBBackendUsers
 
 
-def create_user(session: DBSession, user: RequestCreateUserDto, hashed_password: bytes) -> DBBackendUsers:
+def create_backend_user(session: DBSession, user: RequestCreateUserDto, hashed_password: bytes) -> DBBackendUsers:
     new_user = DBBackendUsers(
         login=user.login,
         password=hashed_password,

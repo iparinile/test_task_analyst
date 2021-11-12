@@ -107,6 +107,8 @@ def parse_logs(path_to_logs: str) -> tuple:
     except (ValueError, KeyError) as e:
         raise ParseLogsException(str(e))
 
+    print(users_id)
+
     return goods, users_id, carts, users_transactions
 
 
