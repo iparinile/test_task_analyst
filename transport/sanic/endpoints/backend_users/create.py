@@ -25,7 +25,7 @@ class CreateUserEndpoint(BaseEndpoint):
             raise SanicPasswordHashException(str(e))
 
         try:
-            db_user = user_queries.create_backend_user(session, request_model, hashed_password)
+            db_user = user_queries.create_user(session, request_model, hashed_password)
         except DBUserExistsException:
             raise SanicUserConflictException('Login is busy')
 

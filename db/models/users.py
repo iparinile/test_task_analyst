@@ -4,7 +4,7 @@ from db.models import BaseModel
 
 
 class DBUsers(BaseModel):
-    __tablename__ = 'users'
+    __tablename__ = 'backend_users'
 
     ip = Column(VARCHAR(255), nullable=False, unique=True, primary_key=True)
     id = Column(Integer, unique=True)

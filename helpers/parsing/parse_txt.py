@@ -112,8 +112,8 @@ def parse_logs(path_to_logs: str) -> tuple:
     return goods, users_id, carts, users_transactions
 
 
-# def get_country_by_ip(users: list):
-#     rs = (grequests.get(f"https://ipinfo.io/{ip}/json") for ip in users)
+# def get_country_by_ip(backend_users: list):
+#     rs = (grequests.get(f"https://ipinfo.io/{ip}/json") for ip in backend_users)
 #
 #     print(grequests.map(rs))
 
