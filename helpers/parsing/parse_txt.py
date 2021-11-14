@@ -59,7 +59,6 @@ def parse_logs(path_to_logs: str) -> tuple:
 
                         carts[cart_id]["goods"][goods_id] = amount
 
-                        # for counter_transaction
                     elif url_path[0].startswith("pay"):
                         transaction["type"] = "pay"
                         pay_info = url_path[0].split("?")[1]
@@ -80,6 +79,8 @@ def parse_logs(path_to_logs: str) -> tuple:
                     elif url_path[0].startswith("success_pay"):
                         payed_cart_id = int(url_path[0].split("_")[2])
                         carts[payed_cart_id]["is_payed"] = True
+                        transaction["cart_id"] = payed_cart_id
+                        transaction["type"] = "success_pay"
 
                     else:
                         category_name = url_path[0]
@@ -108,8 +109,6 @@ def parse_logs(path_to_logs: str) -> tuple:
     except (ValueError, KeyError) as e:
         raise ParseLogsException(str(e))
 
-    pprint(users_transactions)
-
     return goods, users_id, carts, users_transactions
 
 
@@ -120,4 +119,5 @@ def parse_logs(path_to_logs: str) -> tuple:
 
 
 if __name__ == '__main__':
-    parse_logs("logs.txt")
+    goods, users, carts, transactions = parse_logs("logs.txt")
+    pprint(transactions)

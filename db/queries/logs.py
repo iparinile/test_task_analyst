@@ -61,7 +61,7 @@ def create_transaction(
         session: DBSession,
         user_ip: str,
         datetime_obj: datetime.datetime,
-        transaction_type: str,
+        transaction_type: str = None,
         category_id: int = None,
         goods_id: int = None,
         cart_id: int = None
@@ -81,3 +81,13 @@ def create_transaction(
 def get_category_id(session: DBSession, category_name: str) -> int:
     category = session.get_category_id_by_name(category_name)
     return category.id
+
+
+def get_goods_id(session: DBSession, category_id: int, goods_name: str) -> int:
+    goods = session.get_goods_id_by_name(goods_name, category_id)
+    return goods.id
+
+
+def get_count_unpaid_carts(session: DBSession) -> int:
+    unpaid_carts = session.get_unpaid_carts()
+    return unpaid_carts

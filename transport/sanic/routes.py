@@ -13,5 +13,7 @@ def get_routes(config: ApplicationConfig, context: Context) -> Tuple:
         endpoints.UserEndpoint(config, context, uri='/user/<uid:int>', methods=['PATCH', 'DELETE'],
                                auth_required=True),
         endpoints.AllUserEndpoint(config, context, uri='/user/all', methods=['GET'], auth_required=True),
-        endpoints.ParseLogsEndpoint(config, context, uri='/parse', methods=['GET'], auth_required=True)
+        endpoints.ParseLogsEndpoint(config, context, uri='/parse', methods=['GET'], auth_required=True),
+        endpoints.ReportEndpoint(config, context, uri='/report/<report_number:int>', methods=['GET'],
+                                 auth_required=True)
     )

@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm import sessionmaker, Session, Query
 
 from db.exceptions import DBIntegrityException, DBDataException
-from db.models import BaseModel, DBBackendUsers, DBCategories
+from db.models import BaseModel, DBBackendUsers, DBCategories, DBGoods, DBCarts
 
 
 class DBSession:
@@ -47,6 +47,13 @@ class DBSession:
 
     def get_category_id_by_name(self, category_name: str) -> DBCategories:
         return self.query(DBCategories).filter(DBCategories.name == category_name).first()
+
+    def get_goods_id_by_name(self, goods_name: str, category_id: int) -> DBGoods:
+        return self.query(DBGoods).filter(DBGoods.category_id == category_id, DBGoods.name == goods_name).first()
+
+    def get_unpaid_carts(self) -> int:
+        qs = self.query(DBCarts).filter(DBCarts.is_payed == False)
+        return qs.count()
 
     def commit_session(self, need_close: bool = False):
         try:
