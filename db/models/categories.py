@@ -6,5 +6,5 @@ from db.models import BaseModel
 class DBCategories(BaseModel):
     __tablename__ = 'categories'
 
-    id = Column(Integer, nullable=False, unique=True, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(VARCHAR(255), nullable=False, unique=True)

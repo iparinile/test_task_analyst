@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm import sessionmaker, Session, Query
 
 from db.exceptions import DBIntegrityException, DBDataException
-from db.models import BaseModel, DBBackendUsers
+from db.models import BaseModel, DBBackendUsers, DBCategories
 
 
 class DBSession:
@@ -16,6 +16,9 @@ class DBSession:
 
     def query(self, *args, **kwargs) -> Query:
         return self._session.query(*args, **kwargs)
+
+    def delete_rows(self, model) -> Query:
+        return self.query(model).delete()
 
     def users(self) -> Query:
         return self.query(DBBackendUsers).filter(DBBackendUsers.is_delete == 0)
@@ -41,6 +44,9 @@ class DBSession:
         qs = self.users()
         # print(qs)
         return qs.all()
+
+    def get_category_id_by_name(self, category_name: str) -> DBCategories:
+        return self.query(DBCategories).filter(DBCategories.name == category_name).first()
 
     def commit_session(self, need_close: bool = False):
         try:
