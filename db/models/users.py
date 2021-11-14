@@ -7,5 +7,5 @@ class DBUsers(BaseModel):
     __tablename__ = 'users'
 
     ip = Column(VARCHAR(255), nullable=False, unique=True, primary_key=True)
-    id = Column(Integer, unique=True)
+    id = Column(Integer, unique=False)
     country = Column(VARCHAR(255))

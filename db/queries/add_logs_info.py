@@ -2,7 +2,7 @@ from db.database import DBSession
 from db.models import DBUsers
 
 
-def create_user(session: DBSession, user_ip: str, user_id: int, country: str = None) -> None:
+def create_user(session: DBSession, user_ip: str, user_id: int, country: str = '') -> None:
 
     new_user = DBUsers(
         ip=user_ip,
