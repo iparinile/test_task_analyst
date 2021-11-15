@@ -29,7 +29,12 @@ class ReportEndpoint(BaseEndpoint):
             return await self.make_response_json(body=response, status=200)
 
         elif report_number == 7:
-            pass
+            count_users_with_repeat_pay = logs_queries.get_count_users_with_repeat_pay(session)
+
+            response = {
+                "Count_users_with_repeat_pay": count_users_with_repeat_pay
+            }
+            return await self.make_response_json(body=response, status=200)
         else:
             return await self.make_response_json(status=400, message='There is no such report number. '
                                                                      'Enter a number from 1 to 7')

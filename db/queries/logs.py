@@ -91,3 +91,8 @@ def get_goods_id(session: DBSession, category_id: int, goods_name: str) -> int:
 def get_count_unpaid_carts(session: DBSession) -> int:
     unpaid_carts = session.get_unpaid_carts()
     return unpaid_carts
+
+
+def get_count_users_with_repeat_pay(session: DBSession) -> int:
+    number_of_users = session.get_success_pay_transactions()
+    return number_of_users

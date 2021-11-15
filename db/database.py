@@ -1,11 +1,12 @@
 from typing import List
 
+from sqlalchemy import func
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm import sessionmaker, Session, Query
 
 from db.exceptions import DBIntegrityException, DBDataException
-from db.models import BaseModel, DBBackendUsers, DBCategories, DBGoods, DBCarts
+from db.models import BaseModel, DBBackendUsers, DBCategories, DBGoods, DBCarts, DBTransactions
 
 
 class DBSession:
@@ -50,6 +51,12 @@ class DBSession:
 
     def get_goods_id_by_name(self, goods_name: str, category_id: int) -> DBGoods:
         return self.query(DBGoods).filter(DBGoods.category_id == category_id, DBGoods.name == goods_name).first()
+
+    def get_success_pay_transactions(self) -> int:
+        qs = self.query(func.count(DBTransactions.id), DBTransactions.user_ip) \
+            .filter(DBTransactions.type == 'success_pay').group_by(DBTransactions.user_ip) \
+            .having(func.count(DBTransactions.id) > 1)
+        return qs.count()
 
     def get_unpaid_carts(self) -> int:
         qs = self.query(DBCarts).filter(DBCarts.is_payed == False)
