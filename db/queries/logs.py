@@ -99,6 +99,31 @@ def get_count_users_with_repeat_pay(session: DBSession) -> int:
     return number_of_users
 
 
+def get_country_with_max_count_transactions(session: DBSession) -> str:
+    country_visits = dict()
+    for user_ip, transaction_count in session.get_transactions_group_by_users():
+        country = session.get_country_by_ip(user_ip).country
+        if country is not None:  # По некоторым ip нет данных по стране
+            if country not in country_visits.keys():
+                country_visits[country] = transaction_count
+            else:
+                country_visits[country] += transaction_count
+    return max(country_visits, key=country_visits.get)
+
+
+def get_country_with_max_select_goods_in_fresh_fish(session: DBSession) -> str:
+    country_visits = dict()
+    fresh_fish_id = session.get_category_id_by_name('fresh_fish').id
+    for user_ip, transaction_count in session.get_transactions_with_fresh_fish(fresh_fish_id):
+        country = session.get_country_by_ip(user_ip).country
+        if country is not None:
+            if country not in country_visits.keys():
+                country_visits[country] = transaction_count
+            else:
+                country_visits[country] += transaction_count
+    return max(country_visits, key=country_visits.get)
+
+
 def get_category_which_often_bought_with_semi_manufactures(session: DBSession) -> str:
     semi_manufactures_id = get_category_id(session, 'semi_manufactures')
     goods_in_semi_manufactures = []
@@ -123,3 +148,31 @@ def get_category_which_often_bought_with_semi_manufactures(session: DBSession) -
     often_bought_with_semi_manufactures_category = max(categories_bought_with_semi_manufactures,
                                                        key=categories_bought_with_semi_manufactures.get)
     return session.get_category_name_by_category_id(often_bought_with_semi_manufactures_category).name
+
+
+def get_part_of_day_when_max_visit_frozen_fish(session: DBSession) -> str:
+    frozen_fish_id = get_category_id(session, 'frozen_fish')
+    transactions_in_parts_of_day = {'night': 0, 'morning': 0, 'daytime': 0, 'evening': 0}
+    for transaction in session.get_transactions_with_frozen_fish(frozen_fish_id):
+        transaction_time = transaction.datetime.time()
+        if datetime.time(0, 0, 0) <= transaction_time < datetime.time(5, 59, 59):
+            transactions_in_parts_of_day['night'] += 1
+        elif datetime.time(6, 0, 0) <= transaction_time < datetime.time(11, 59, 59):
+            transactions_in_parts_of_day['morning'] += 1
+        elif datetime.time(12, 0, 0) <= transaction_time < datetime.time(17, 59, 59):
+            transactions_in_parts_of_day['daytime'] += 1
+        elif datetime.time(18, 0, 0) <= transaction_time < datetime.time(23, 59, 59):
+            transactions_in_parts_of_day['evening'] += 1
+    return max(transactions_in_parts_of_day, key=transactions_in_parts_of_day.get)
+
+
+def get_max_counter_transactions(session: DBSession) -> int:
+    transactions_counter = dict()
+    for hour_number in range(0, 24):
+        transactions_counter[hour_number] = 0
+    for transaction in session.get_all_transactions():
+        transaction_time = transaction.datetime.time()
+        for hour_number in transactions_counter.keys():
+            if datetime.time(hour_number, 0, 0) <= transaction_time < datetime.time(hour_number, 59, 59):
+                transactions_counter[hour_number] += 1
+    return max(transactions_counter.values())

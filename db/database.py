@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm import sessionmaker, Session, Query
 
 from db.exceptions import DBIntegrityException, DBDataException
-from db.models import BaseModel, DBBackendUsers, DBCategories, DBGoods, DBCarts, DBTransactions, DBGoodsInCarts
+from db.models import BaseModel, DBBackendUsers, DBCategories, DBGoods, DBCarts, DBTransactions, DBGoodsInCarts, DBUsers
 
 
 class DBSession:
@@ -35,10 +35,10 @@ class DBSession:
         except DataError as e:
             raise DBDataException(e)
 
-    def get_user_by_login(self, login: str) -> DBBackendUsers:
+    def get_backend_user_by_login(self, login: str) -> DBBackendUsers:
         return self.users().filter(DBBackendUsers.login == login).first()
 
-    def get_user_by_id(self, uid: int) -> DBBackendUsers:
+    def get_backend_user_by_id(self, uid: int) -> DBBackendUsers:
         return self.users().filter(DBBackendUsers.id == uid).first()
 
     def get_user_all(self) -> List['DBBackendUsers']:
@@ -57,6 +57,17 @@ class DBSession:
             .filter(DBTransactions.type == 'success_pay').group_by(DBTransactions.user_ip) \
             .having(func.count(DBTransactions.id) > 1)
         return qs.count()
+
+    def get_transactions_group_by_users(self) -> List[DBTransactions]:
+        return self.query(DBTransactions.user_ip, func.count(DBTransactions.id)).group_by(DBTransactions.user_ip)
+
+    def get_transactions_with_fresh_fish(self, fresh_fish_id: int) -> List[DBTransactions]:
+        return self.query(DBTransactions.user_ip, func.count(DBTransactions.id)) \
+            .filter(DBTransactions.category_id == fresh_fish_id, DBTransactions.type == 'select_goods') \
+            .group_by(DBTransactions.user_ip)
+
+    def get_country_by_ip(self, user_ip: str) -> DBUsers:
+        return self.query(DBUsers.country).filter(DBUsers.ip == user_ip).first()
 
     def get_paid_carts(self) -> List[DBCarts]:
         qs = self.query(DBCarts.id).filter(DBCarts.is_payed == True)
@@ -77,6 +88,13 @@ class DBSession:
     def get_unpaid_carts(self) -> int:
         qs = self.query(DBCarts).filter(DBCarts.is_payed == False)
         return qs.count()
+
+    def get_transactions_with_frozen_fish(self, frozen_fish_id: int) -> List[DBTransactions]:
+        return self.query(DBTransactions.id, DBTransactions.datetime) \
+            .filter(DBTransactions.category_id == frozen_fish_id, DBTransactions.type == 'select_category')
+
+    def get_all_transactions(self) -> List[DBTransactions]:
+        return self.query(DBTransactions.id, DBTransactions.datetime).all()
 
     def commit_session(self, need_close: bool = False):
         try:

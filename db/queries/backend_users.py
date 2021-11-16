@@ -14,7 +14,7 @@ def create_backend_user(session: DBSession, user: RequestCreateUserDto, hashed_p
         last_name=user.last_name
     )
 
-    if session.get_user_by_login(new_user.login) is not None:
+    if session.get_backend_user_by_login(new_user.login) is not None:
         raise DBUserExistsException
 
     session.add_model(new_user)
@@ -26,9 +26,9 @@ def get_user(session: DBSession, *, login: str = None, user_id: int = None) -> D
     db_user = None
 
     if login is not None:
-        db_user = session.get_user_by_login(login)
+        db_user = session.get_backend_user_by_login(login)
     elif user_id is not None:
-        db_user = session.get_user_by_id(user_id)
+        db_user = session.get_backend_user_by_id(user_id)
 
     if db_user is None:
         raise DBUserNotExistsException
@@ -36,7 +36,7 @@ def get_user(session: DBSession, *, login: str = None, user_id: int = None) -> D
 
 
 def patch_user(session: DBSession, user: RequestPatchUserDto, user_id: int) -> DBBackendUsers:
-    db_user = session.get_user_by_id(user_id)
+    db_user = session.get_backend_user_by_id(user_id)
 
     for attr in user.fields:
         if hasattr(user, attr):
@@ -47,7 +47,7 @@ def patch_user(session: DBSession, user: RequestPatchUserDto, user_id: int) -> D
 
 
 def delete_user(session: DBSession, user_id: int) -> DBBackendUsers:
-    db_user = session.get_user_by_id(user_id)
+    db_user = session.get_backend_user_by_id(user_id)
     db_user.is_delete = True
     return db_user
 
