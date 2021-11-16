@@ -1,4 +1,5 @@
 import os
+from pprint import pprint
 
 from sanic.request import Request
 from sanic.response import BaseHTTPResponse
@@ -8,6 +9,7 @@ from db.exceptions import DBDataException, DBIntegrityException
 from db.queries import logs as logs_queries
 from helpers.parsing import parse_logs
 from helpers.parsing.exception import ParseLogsException
+from helpers.parsing.find_country import insert_country_into_users
 from transport.sanic.endpoints import BaseEndpoint
 from transport.sanic.exceptions import SanicLogsException, SanicDBException
 
@@ -22,9 +24,12 @@ class ParseLogsEndpoint(BaseEndpoint):
         except ParseLogsException as e:
             raise SanicLogsException(str(e))
 
+        users = insert_country_into_users(users)
+
         for user_ip in users.keys():
-            user_id = users[user_ip]
-            logs_queries.create_user(session, user_ip, user_id)
+            user_id = users[user_ip]['id']
+            user_country = users[user_ip]['country']
+            logs_queries.create_user(session, user_ip, user_id, user_country)
 
         for category_name in goods.keys():
             logs_queries.create_category(session, category_name)

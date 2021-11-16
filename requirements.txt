@@ -16,3 +16,5 @@ alembic~=1.5.2
 marshmallow~=3.10.0
 bcrypt~=3.2.0
 PyJWT~=2.0.1
+aiohttp~=3.8.1
+ipinfo~=4.2.1

@@ -19,7 +19,12 @@ class ReportEndpoint(BaseEndpoint):
         elif report_number == 4:
             pass
         elif report_number == 5:
-            pass
+            often_category_name = logs_queries.get_category_which_often_bought_with_semi_manufactures(session)
+
+            response = {
+                "Category which is more often bought with semi_manufactures": often_category_name
+            }
+            return await self.make_response_json(body=response, status=200)
         elif report_number == 6:
             count_unpaid_carts = logs_queries.get_count_unpaid_carts(session)
 

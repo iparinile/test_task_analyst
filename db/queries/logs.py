@@ -13,10 +13,11 @@ def clear_data(session: DBSession) -> None:
     session.delete_rows(DBTransactions)
 
 
-def create_user(session: DBSession, user_ip: str, user_id: int) -> None:
+def create_user(session: DBSession, user_ip: str, user_id: int, user_country: str) -> None:
     new_user = DBUsers(
         ip=user_ip,
-        id=user_id
+        id=user_id,
+        country=user_country
     )
 
     session.add_model(new_user)
@@ -96,3 +97,29 @@ def get_count_unpaid_carts(session: DBSession) -> int:
 def get_count_users_with_repeat_pay(session: DBSession) -> int:
     number_of_users = session.get_success_pay_transactions()
     return number_of_users
+
+
+def get_category_which_often_bought_with_semi_manufactures(session: DBSession) -> str:
+    semi_manufactures_id = get_category_id(session, 'semi_manufactures')
+    goods_in_semi_manufactures = []
+    for goods in session.get_goods_in_semi_manufactures(semi_manufactures_id):
+        goods_in_semi_manufactures.append(goods.id)
+
+    categories_bought_with_semi_manufactures = dict()
+
+    for cart in session.get_paid_carts():
+        cart_id = cart.id
+        for goods_in_carts in session.get_goods_in_cart_by_cart_id(cart_id):
+            goods_id = goods_in_carts.goods_id
+            if goods_id in goods_in_semi_manufactures:
+                for goods in session.get_goods_in_cart_by_cart_id(cart_id):
+                    category_id = session.get_category_id_by_goods_id(goods.goods_id).category_id
+                    if category_id != semi_manufactures_id:
+                        if category_id not in categories_bought_with_semi_manufactures.keys():
+                            categories_bought_with_semi_manufactures[category_id] = 1
+                        else:
+                            categories_bought_with_semi_manufactures[category_id] += 1
+
+    often_bought_with_semi_manufactures_category = max(categories_bought_with_semi_manufactures,
+                                                       key=categories_bought_with_semi_manufactures.get)
+    return session.get_category_name_by_category_id(often_bought_with_semi_manufactures_category).name

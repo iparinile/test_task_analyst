@@ -1,5 +1,4 @@
 import datetime
-from pprint import pprint
 
 from helpers.parsing.exception import ParseLogsException
 
@@ -8,7 +7,7 @@ def parse_logs(path_to_logs: str) -> tuple:
     try:
         with open(path_to_logs, "r") as logs_file:
             lines = logs_file.readlines()
-            users_id = dict()
+            users = dict()
             users_transactions = dict()
             goods = dict()
             carts = dict()
@@ -25,8 +24,8 @@ def parse_logs(path_to_logs: str) -> tuple:
                 transaction["date_time"] = date_time_obj
 
                 user_ip = split_line[6]
-                if user_ip not in users_id.keys():
-                    users_id[user_ip] = ''
+                if user_ip not in users.keys():
+                    users[user_ip] = {'id': None, 'country': ''}
 
                 current_url = split_line[7]
                 split_url = current_url.split('/')
@@ -69,9 +68,9 @@ def parse_logs(path_to_logs: str) -> tuple:
                         user_id = int(split_pay_info[0].split("=")[1])
                         transaction["user_id"] = user_id
 
-                        if users_id[user_ip] == '':
-                            users_id[user_ip] = user_id
-                        elif users_id[user_ip] == user_id:
+                        if users[user_ip]['id'] is None:
+                            users[user_ip]['id'] = user_id
+                        elif users[user_ip]['id'] == user_id:
                             pass
                         else:
                             raise ValueError
@@ -109,15 +108,4 @@ def parse_logs(path_to_logs: str) -> tuple:
     except (ValueError, KeyError) as e:
         raise ParseLogsException(str(e))
 
-    return goods, users_id, carts, users_transactions
-
-
-# def get_country_by_ip(backend_users: list):
-#     rs = (grequests.get(f"https://ipinfo.io/{ip}/json") for ip in backend_users)
-#
-#     print(grequests.map(rs))
-
-
-if __name__ == '__main__':
-    goods, users, carts, transactions = parse_logs("logs.txt")
-    pprint(transactions)
+    return goods, users, carts, users_transactions

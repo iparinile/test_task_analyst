@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm import sessionmaker, Session, Query
 
 from db.exceptions import DBIntegrityException, DBDataException
-from db.models import BaseModel, DBBackendUsers, DBCategories, DBGoods, DBCarts, DBTransactions
+from db.models import BaseModel, DBBackendUsers, DBCategories, DBGoods, DBCarts, DBTransactions, DBGoodsInCarts
 
 
 class DBSession:
@@ -57,6 +57,22 @@ class DBSession:
             .filter(DBTransactions.type == 'success_pay').group_by(DBTransactions.user_ip) \
             .having(func.count(DBTransactions.id) > 1)
         return qs.count()
+
+    def get_paid_carts(self) -> List[DBCarts]:
+        qs = self.query(DBCarts.id).filter(DBCarts.is_payed == True)
+        return qs.all()
+
+    def get_goods_in_cart_by_cart_id(self, cart_id: int) -> List[DBGoodsInCarts]:
+        return self.query(DBGoodsInCarts.goods_id).filter(DBGoodsInCarts.cart_id == cart_id).all()
+
+    def get_goods_in_semi_manufactures(self, semi_manufactures_id: int) -> List[DBGoods]:
+        return self.query(DBGoods.id).filter(DBGoods.category_id == semi_manufactures_id).all()
+
+    def get_category_id_by_goods_id(self, goods_id: int) -> DBGoods:
+        return self.query(DBGoods.category_id).filter(DBGoods.id == goods_id).first()
+
+    def get_category_name_by_category_id(self, category_id: int) -> DBCategories:
+        return self.query(DBCategories.name).filter(DBCategories.id == category_id).first()
 
     def get_unpaid_carts(self) -> int:
         qs = self.query(DBCarts).filter(DBCarts.is_payed == False)

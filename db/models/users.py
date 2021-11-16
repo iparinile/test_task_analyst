@@ -8,3 +8,4 @@ class DBUsers(BaseModel):
 
     ip = Column(VARCHAR(255), nullable=False, unique=True, primary_key=True)
     id = Column(Integer)
+    country = Column(VARCHAR(255))
