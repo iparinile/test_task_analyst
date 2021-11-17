@@ -40,6 +40,8 @@ uri = '/user/auth'
 <li>password - str, обязательное</li>
 </ul>
 
+Полученный токен нужно вставить в заголовки последующих запросов в виде: Authorization: token
+
 <h3>UserEndpoint</h3>
 uri = '/user/{id пользователя}' 
 
