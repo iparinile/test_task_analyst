@@ -102,7 +102,7 @@ uri = '/report/{порядковый номер отчета}'
 <ul>
 <li>transport (sanic)</li>
 <li>API (marshmallow)</li>
-<li>service</li>
+<li>service (endpoint)</li>
 <li>DB (model)</li>
 <li>DB (query)</li>
 </ul>
