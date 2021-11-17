@@ -14,7 +14,7 @@ uri = '/'
 
 Проверка работоспособности сервера
 
-###CreateUserEndpoint
+<h3>CreateUserEndpoint</h3>
 uri = '/user' 
 
 Методы = ['POST']
@@ -28,7 +28,7 @@ uri = '/user'
 <li>last_name - str, обязательное</li>
 </ul>
 
-###AuthUserEndpoint
+<h3>AuthUserEndpoint</h3>
 uri = '/user/auth' 
 
 Методы = ['POST']
@@ -40,7 +40,7 @@ uri = '/user/auth'
 <li>password - str, обязательное</li>
 </ul>
 
-###UserEndpoint
+<h3>UserEndpoint</h3>
 uri = '/user/{id пользователя}' 
 
 Методы = ['PATCH', 'DELETE']
@@ -54,7 +54,7 @@ uri = '/user/{id пользователя}'
 <li>last_name - str</li>
 </ul>
 
-###AllUserEndpoint
+<h3>AllUserEndpoint</h3>
 uri = '/user/all' 
 
 Методы = ['GET']
@@ -63,7 +63,7 @@ uri = '/user/all'
 
 Получение списка всех пользователей
 
-###ParseLogsEndpoint
+<h3>ParseLogsEndpoint</h3>
 
 uri = '/parse' 
 
@@ -73,7 +73,7 @@ uri = '/parse'
 
 Парсинг логов из файла logs.txt в папке проекта, помещение обработанных данных в БД.
 
-###ReportEndpoint
+<h3>ReportEndpoint</h3>
 uri = '/report/{порядковый номер отчета}' 
 
 Методы = ['GET']
