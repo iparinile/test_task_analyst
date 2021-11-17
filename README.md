@@ -1,7 +1,4 @@
 <h1 align="center">Тестовое задание Python Backend</h1>
-<h2 align="center">
-
-</h2>
 
 ## Описание
 
@@ -10,7 +7,7 @@
 Backend-сервер, отвечающий на http запросы, написан на фреймворке sanic
 ## Доступные запросы (routes):
 
-###HealthEndpoint
+<h3>HealthEndpoint</h3>
 uri = '/' 
 
 Методы = ['GET', 'POST']
